@@ -6,9 +6,11 @@ import pandas as pd
 from typing import List
 import numpy as np
 from sklearn.metrics import ConfusionMatrixDisplay
+# Ignore warnings
+import warnings
+warnings.filterwarnings('ignore')
 
-
-def plot_general_metrics_barplot(general_metrics: pd.DataFrame):
+def plot_barplot_models_metrics(general_metrics: pd.DataFrame):
     """
     Creates a bar plot, where each bar is a metric, the y axis is the value and the x axis is the model.
 
@@ -16,14 +18,15 @@ def plot_general_metrics_barplot(general_metrics: pd.DataFrame):
         general_metrics (pd.DataFrame): General metrics table.
     """
     general_metrics_melt = general_metrics.reset_index().melt("index")
+    metrics = general_metrics_melt.rename(columns={'variable': 'Model'}, )
     plt.figure(figsize=(10, 6))
     sns.barplot(
         x="index",
         y="value",
-        hue="variable",
-        data=general_metrics_melt,
+        hue="Model",
+        data=metrics,
         linewidth=1,
-        edgecolor=".5",
+        edgecolor="1",
     )
     plt.xlabel("Model")
     plt.ylabel("Metric Value")
@@ -31,14 +34,14 @@ def plot_general_metrics_barplot(general_metrics: pd.DataFrame):
     plt.show()
 
 
-def plot_general_metrics_lineplot(general_metrics: pd.DataFrame):
+def plot_line_models_metrics(general_metrics: pd.DataFrame):
     """
     Creates a line plot, where each line is a metric, the y axis is the value and the x axis is the model.
 
     Args:
         general_metrics (pd.DataFrame): General metrics table.
     """
-    plt.figure(figsize=(8, 4))
+    plt.figure(figsize=(10, 6))
     general_metrics.T.plot(kind="line", marker="o")
     plt.xlabel("Model")
     plt.ylabel("Metric Value")
@@ -73,7 +76,7 @@ def plot_confusion_matrix(
     plt.show()
 
 
-def plot_metrics(
+def plot_barplot_model_metrics(
     metrics: pd.DataFrame,
     algorithm: str,
     title: str = None,
@@ -93,7 +96,7 @@ def plot_metrics(
     """
     rescale = lambda y: (y - np.min(y)) / (np.max(y) - np.min(y))
 
-    plt.figure(figsize=(8, 4))
+    plt.figure(figsize=(10, 6))
     if color is not None:
         bar_plot = plt.barh(
             metrics["Metric"],
